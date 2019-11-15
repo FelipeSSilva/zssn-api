@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSurvivorsRequest;
+use App\Http\Requests\UpdateSurvivorsRequest;
 use App\Item;
 use App\Resource;
 use App\Survivor;
@@ -38,5 +39,21 @@ class SurvivorsController extends Controller
 
         return response()->json($survivor, 201);
 
+    }
+
+    public function update(UpdateSurvivorsRequest $request, $id)
+    {
+        $survivor = Survivor::find($id);
+
+        if (!$survivor) {
+            return response()->json([
+                'message' => 'Survivor not found',
+            ], 404);
+        }
+
+        $survivor->fill($request->all());
+        $survivor->save();
+
+        return response()->json($survivor);
     }
 }
