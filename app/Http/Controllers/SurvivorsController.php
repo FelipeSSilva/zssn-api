@@ -199,6 +199,17 @@ class SurvivorsController extends Controller
         ], 200);
     }
 
+    public function percentageNonInfected(){
+        $countAllSurvivors = Survivor::count();
+        $countNonInfetedSurvivors = Survivor::where('infected','N')->count();
+
+        $percentageNonInfected = (100 * $countNonInfetedSurvivors) / $countAllSurvivors;
+
+        return response()->json([
+            'percentageNonInfected' => $percentageNonInfected,
+        ], 200);
+    }
+
     private static function checkItemsEquality($resourceSurvivorOffer, $resourceSurvivorAccept)
     {
         $countPointsSurvivorOffer = 0;
