@@ -210,6 +210,21 @@ class SurvivorsController extends Controller
         ], 200);
     }
 
+    public function averageAmount(){
+        $countAllSurvivors = Survivor::count();
+        $allItems = Item::get();
+        $return = array();
+        foreach ($allItems as $item){
+            $countAllItem = Resource::where('item_id',$item->id)->sum('quantity');
+
+            $return[$item->name] = $countAllItem / $countAllSurvivors;
+        }
+
+        return response()->json([
+            $return
+        ], 200);
+    }
+
     private static function checkItemsEquality($resourceSurvivorOffer, $resourceSurvivorAccept)
     {
         $countPointsSurvivorOffer = 0;
