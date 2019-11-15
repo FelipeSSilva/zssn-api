@@ -82,7 +82,7 @@ class SurvivorsController extends Controller
         $infectedReport->survivor_infected_id = $survivor_infected_id;
         $infectedReport->save();
 
-        if ($survivorInfected->infectedReportsCount >= 3) {
+        if ($survivorInfected->infectionReportsCount >= 3) {
             if ($survivorInfected->infected != 'Y') {
                 $survivorInfected->infected = 'Y';
                 $survivorInfected->save();
@@ -185,6 +185,17 @@ class SurvivorsController extends Controller
 
         return response()->json([
             'message' => 'Trade done!',
+        ], 200);
+    }
+
+    public function percentageInfected(){
+        $countAllSurvivors = Survivor::count();
+        $countInfetedSurvivors = Survivor::where('infected','Y')->count();
+
+        $percentageInfected = (100 * $countInfetedSurvivors) / $countAllSurvivors;
+
+        return response()->json([
+            'percentageInfected' => $percentageInfected,
         ], 200);
     }
 
