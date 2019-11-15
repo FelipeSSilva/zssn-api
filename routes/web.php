@@ -22,6 +22,9 @@ Route::group(array('prefix' => 'api'), function () {
     Route::post('survivors/{survivor_reporter_id}/reportInfection/{survivor_infected_id}', [
         'as'=> 'survivors.reportInfection',
         'uses' => 'SurvivorsController@reportInfection'])->where(['survivor_reporter_id' => '[0-9]+', 'survivor_infected_id' => '[0-9]+']);
+    Route::put('survivors/{survivor_offer_id}/tradeItems/{survivor_accept_id}', [
+        'as'=> 'survivors.tradeItems',
+        'uses' => 'SurvivorsController@tradeItems'])->where(['survivor_offer_id' => '[0-9]+', 'survivor_accept_id' => '[0-9]+']);
 });
 
 

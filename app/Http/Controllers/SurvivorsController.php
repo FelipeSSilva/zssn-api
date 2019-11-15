@@ -3,12 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSurvivorsRequest;
+use App\Http\Requests\TradeSurvivorsRequest;
 use App\Http\Requests\UpdateSurvivorsRequest;
 use App\InfectionReport;
 use App\Item;
 use App\Resource;
 use App\Survivor;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class SurvivorsController extends Controller
 {
@@ -58,7 +60,8 @@ class SurvivorsController extends Controller
         return response()->json($survivor);
     }
 
-    public function reportInfection($survivor_reporter_id, $survivor_infected_id){
+    public function reportInfection($survivor_reporter_id, $survivor_infected_id)
+    {
         $survivorReporter = Survivor::find($survivor_reporter_id);
         if (!$survivorReporter) {
             return response()->json([
@@ -79,8 +82,8 @@ class SurvivorsController extends Controller
         $infectedReport->survivor_infected_id = $survivor_infected_id;
         $infectedReport->save();
 
-        if($survivorInfected->infectedReportsCount >= 3){
-            if($survivorInfected->infected != 'Y'){
+        if ($survivorInfected->infectedReportsCount >= 3) {
+            if ($survivorInfected->infected != 'Y') {
                 $survivorInfected->infected = 'Y';
                 $survivorInfected->save();
             }
@@ -88,10 +91,148 @@ class SurvivorsController extends Controller
             return response()->json([
                 'message' => 'Survivor infected!',
             ], 200);
-        }else{
+        } else {
             return response()->json([
                 'message' => 'Unconfirmed infection!',
             ], 200);
         }
+    }
+
+    public function tradeItems(TradeSurvivorsRequest $request, $survivor_offer_id, $survivor_accept_id)
+    {
+        $survivorOffer = Survivor::find($survivor_offer_id);
+        if (!$survivorOffer) {
+            return response()->json([
+                'message' => 'Survivor not found',
+            ], 404);
+        } elseif ($survivorOffer->infected == 'Y') {
+            return response()->json([
+                'message' => 'Survivor infected!',
+            ], 400);
+        }
+
+        $survivorAccept = Survivor::find($survivor_accept_id);
+        if (!$survivorAccept) {
+            return response()->json([
+                'message' => 'Survivor not found',
+            ], 404);
+        } elseif ($survivorAccept->infected == 'Y') {
+            return response()->json([
+                'message' => 'Survivor infected!',
+            ], 400);
+        }
+
+        $checkItemEquality = self::checkItemsEquality($request->resourceSurvivorOffer, $request->resourceSurvivorAccept);
+        if ($checkItemEquality == false) {
+            return response()->json([
+                'message' => 'Different points!',
+            ], 400);
+        }
+
+        $checkQuantityMinSurvivorOffer = self::checkQuantityMin($request->resourceSurvivorOffer, $survivorOffer);
+        if ($checkQuantityMinSurvivorOffer == false) {
+            return response()->json([
+                'message' => 'No resources available!',
+            ], 400);
+        }
+
+        $checkQuantityMinSurvivorAccept = self::checkQuantityMin($request->resourceSurvivorAccept, $survivorAccept);
+        if ($checkQuantityMinSurvivorAccept == false) {
+            return response()->json([
+                'message' => 'No resources available!',
+            ], 400);
+        }
+
+        foreach ($request->resourceSurvivorOffer as $itemName => $quantityTrade) {
+            $item = Item::where('name', 'like', '%' . $itemName . '%')->first();
+            $resourceSurvivorOffer = Resource::where('item_id','=',$item->id)->where('survivor_id','=',$survivor_offer_id)->first();
+            $resourceSurvivorOffer->quantity -= $quantityTrade;
+            $resourceSurvivorOffer->save();
+
+            $resourceSurvivorAccept = Resource::where('item_id','=',$item->id)->where('survivor_id','=',$survivor_accept_id)->first();
+
+            if(!empty($resourceSurvivorAccept)){
+                $resourceSurvivorAccept->quantity += $quantityTrade;
+
+                $resourceSurvivorAccept->save();
+            }else{
+                $resourceSurvivorAccept = new Resource();
+                $resourceSurvivorAccept->survivor_id = $survivor_accept_id;
+                $resourceSurvivorAccept->item_id = $item->id;
+                $resourceSurvivorAccept->quantity = $quantityTrade;
+                $resourceSurvivorAccept->save();
+            }
+        }
+
+        foreach ($request->resourceSurvivorAccept as $itemName => $quantityTrade) {
+            $item = Item::where('name', 'like', '%' . $itemName . '%')->first();
+            $resourceSurvivorAccept = Resource::where('item_id','=',$item->id)->where('survivor_id','=',$survivor_accept_id)->first();
+            $resourceSurvivorAccept->quantity -= $quantityTrade;
+            $resourceSurvivorAccept->save();
+
+            $resourceSurvivorOffer = Resource::where('item_id','=',$item->id)->where('survivor_id','=',$survivor_offer_id)->first();
+            if(!empty($resourceSurvivorOffer)){
+                $resourceSurvivorOffer->quantity += $quantityTrade;
+                $resourceSurvivorOffer->save();
+            }else{
+                $resourceSurvivorOffer = new Resource();
+                $resourceSurvivorOffer->survivor_id = $survivor_offer_id;
+                $resourceSurvivorOffer->item_id = $item->id;
+                $resourceSurvivorOffer->quantity = $quantityTrade;
+                $resourceSurvivorOffer->save();
+            }
+        }
+
+        return response()->json([
+            'message' => 'Trade done!',
+        ], 200);
+    }
+
+    private static function checkItemsEquality($resourceSurvivorOffer, $resourceSurvivorAccept)
+    {
+        $countPointsSurvivorOffer = 0;
+        $countPointsSurvivorAccept = 0;
+        $equal = false;
+
+        foreach ($resourceSurvivorOffer as $itemName => $quantity) {
+            $item = Item::where('name', 'like', '%' . $itemName . '%')->first();
+            if ($item) {
+                $countPointsSurvivorOffer += ($quantity * $item->points);
+            } else {
+                return response()->json([
+                    'message' => 'Item not found!',
+                ], 404);
+            }
+        }
+
+        foreach ($resourceSurvivorAccept as $itemName => $quantity) {
+            $item = Item::where('name', 'like', '%' . $itemName . '%')->first();
+            if ($item) {
+                $countPointsSurvivorAccept += ($quantity * $item->points);
+            } else {
+                return response()->json([
+                    'message' => 'Item not found!',
+                ], 404);
+            }
+        }
+
+        if ($countPointsSurvivorOffer == $countPointsSurvivorAccept) {
+            $equal = true;
+        }
+
+        return $equal;
+    }
+
+    private static function checkQuantityMin($resourceSurvivor, Survivor $survivor)
+    {
+        foreach ($resourceSurvivor as $itemName => $quantityTrade) {
+            $itemQuantitySurvivor = $survivor->checkItemQuantity($itemName);
+
+            if ($itemQuantitySurvivor < $quantityTrade) {
+                return false;
+            }
+        }
+
+        return true;
     }
 }
