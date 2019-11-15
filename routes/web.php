@@ -11,6 +11,19 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+
+Route::group(array('prefix' => 'api'), function () {
+
+    Route::get('/', function () {
+        return response()->json(['message' => 'ZSSN API', 'status' => 'Connected!']);;
+    });
+
+    Route::resource('survivors', 'SurvivorsController');
 });
+
+
+Route::get('/', function () {
+    return redirect('api');
+});
+
+

@@ -13,14 +13,14 @@ class Survivor extends Model
         return $this->hasMany('App\Resource');
     }
 
-    function infectedReports(){
-        return $this->hasMany('App\InfectedReport','survivor_infected_id');
+    function infectionReports(){
+        return $this->hasMany('App\InfectionReport','survivor_infected_id');
     }
 
-    protected $appends = ['infectedReportsCount'];
+    protected $appends = ['infectionReportsCount'];
 
-    public function getInfectedReportsCountAttribute() {
-        $rows = $this->infectedReports();
+    public function getInfectionReportsCountAttribute() {
+        $rows = $this->infectionReports();
         return $rows->count();
     }
 }
