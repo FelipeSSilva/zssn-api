@@ -27,6 +27,7 @@ Route::group(array('prefix' => 'api'), function () {
     Route::get('survivors/percentageInfected', 'SurvivorsController@percentageInfected')->name('survivors.percentageInfected');
     Route::get('survivors/percentageNonInfected', 'SurvivorsController@percentageNonInfected')->name('survivors.percentageNonInfected');
     Route::get('survivors/averageAmount', 'SurvivorsController@averageAmount')->name('survivors.averageAmount');
+    Route::get('survivors/pointsLost/{survivor_infected_id}', 'SurvivorsController@pointsLost')->name('survivors.pointsLost')->where(['survivor_infected_id' => '[0-9]+']);
     Route::resource('survivors', 'SurvivorsController');
 });
 

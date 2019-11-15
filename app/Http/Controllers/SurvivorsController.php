@@ -225,6 +225,26 @@ class SurvivorsController extends Controller
         ], 200);
     }
 
+    public function pointsLost($survivor_infected_id){
+        $survivorInfected = Survivor::find($survivor_infected_id);
+        if (!$survivorInfected) {
+            return response()->json([
+                'message' => 'Survivor not found',
+            ], 404);
+        }
+
+        if($survivorInfected->infected == 'N'){
+            return response()->json([
+                'message' => 'Survivor not infected, yet...',
+            ], 400);
+        }
+
+        $countAllItems = Resource::where('survivor_id',$survivor_infected_id)->sum('quantity');
+        return response()->json([
+            'pointsLost' => $countAllItems,
+        ], 200);
+    }
+
     private static function checkItemsEquality($resourceSurvivorOffer, $resourceSurvivorAccept)
     {
         $countPointsSurvivorOffer = 0;
