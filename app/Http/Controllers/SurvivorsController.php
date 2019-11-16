@@ -98,11 +98,11 @@ class SurvivorsController extends Controller
 
             return response()->json([
                 'message' => 'Survivor infected!',
-            ], 200);
+            ], 201);
         } else {
             return response()->json([
                 'message' => 'Unconfirmed infection!',
-            ], 200);
+            ], 201);
         }
     }
 
