@@ -42,17 +42,6 @@ class StoreSurvivorsRequest extends FormRequest
         return $rules;
     }
 
-    public function messages()
-    {
-        return [
-            'name.required' => 'Name is required',
-            'age.required' => 'Age is required',
-            'gender.required' => 'Gender is required',
-            'latitude.required' => 'Latitude is required',
-            'longitude.required' => 'Longitude is required',
-        ];
-    }
-
     protected function failedValidation(Validator $validator)
     {
         $errors = (new ValidationException($validator))->errors();
