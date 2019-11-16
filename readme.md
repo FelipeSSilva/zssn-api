@@ -10,6 +10,7 @@ Assim como editar o arquivo de conexão .env, no projeto possui um arquivo de ex
 Depois de executar o comando acima, agora é hora de inserir dados no banco para permitir testes e o funcionamento correto da API, para isso rode nessa sequência:
 
 > composer dump-autoload
+>
 > php artisan db:seed
 
 
