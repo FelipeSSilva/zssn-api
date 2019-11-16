@@ -76,6 +76,13 @@ class SurvivorsController extends Controller
             ], 404);
         }
 
+        $reportCreated = InfectionReport::where('survivor_reporter_id', $survivor_reporter_id)->where('survivor_infected_id',$survivor_infected_id)->first();
+        if($reportCreated){
+            return response()->json([
+                'message' => 'Report already created',
+            ], 400);
+        }
+
 
         $infectedReport = new InfectionReport();
         $infectedReport->survivor_reporter_id = $survivor_reporter_id;
