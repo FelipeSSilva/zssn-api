@@ -126,6 +126,13 @@ class SurvivorsController extends Controller
     public function tradeItems(TradeSurvivorsRequest $request, $survivor_offer_id, $survivor_accept_id)
     {
         try {
+            if($survivor_offer_id == $survivor_accept_id){
+                return response()->json([
+                    'message' => 'Equal survivors',
+                ], 409);
+            }
+
+
             $survivorOffer = Survivor::find($survivor_offer_id);
             if (!$survivorOffer) {
                 return response()->json([
