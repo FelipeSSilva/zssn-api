@@ -54,7 +54,8 @@ class SurvivorsController extends Controller
             ], 404);
         }
 
-        $survivor->fill($request->all());
+        $survivor->latitude = $request->latitude;
+        $survivor->longitude = $request->longitude;
         $survivor->save();
 
         return response()->json($survivor);
