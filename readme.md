@@ -26,3 +26,6 @@ Depois de executar o comando acima, agora é hora de inserir dados no banco para
 | GET | /survivors/reports/percentageNonInfected  | Retorna a porcetagem de não infectados em ZSSN |
 | GET | /survivors/reports/averageAmount  | Retorna a média de itens por usuários em ZSSN |
 | GET | /survivors/reports/pointsLost/:id  | Retorna a quantidade de pontos peridos em itens do usuário infectado |
+
+# Postman
+Os arquivos Colletion.postman_collection.json e ZssnAPI.postman_environment.json foram estão no projeto para facilitar o teste por meio da ferramenta Postman

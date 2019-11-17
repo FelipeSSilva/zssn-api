@@ -1,0 +1,239 @@
+{
+	"info": {
+		"_postman_id": "7b12df86-4814-45fd-8baf-3918690777ff",
+		"name": "Collection",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Return All Survivors",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/survivors/",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Save a Survivor",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"name\": \"Highlander\",\n    \"age\": 23,\n    \"gender\": \"Male\",\n    \"latitude\": 2323.23,\n    \"longitude\": 1111.11,\n    \"resources\": {\n        \"Water\": 1,\n        \"Ammunition\": 2,\n        \"Medication\": 3,\n        \"Food\": 3\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/survivors",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update location",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"latitude\": 6565.55,\n    \"longitude\": 3322.11\n}"
+				},
+				"url": {
+					"raw": "{{host}}/api/survivors/{{survivor_id1}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"{{survivor_id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Infection Report",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/x-www-form-urlencoded",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": ""
+				},
+				"url": {
+					"raw": "{{host}}/api/survivors/{{survivor_id2}}/reportInfection/{{survivor_id1}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"{{survivor_id2}}",
+						"reportInfection",
+						"{{survivor_id1}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Items Trade",
+			"request": {
+				"method": "PUT",
+				"header": [
+					{
+						"key": "Content-Type",
+						"name": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"resourceSurvivorOffer\": {\n        \"Water\": 1\n    },\n    \"resourceSurvivorAccept\": {\n        \"Food\": 2\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{host}}/api/survivors/{{survivor_id1}}/tradeItems/{{survivor_id3}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"{{survivor_id1}}",
+						"tradeItems",
+						"{{survivor_id3}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Percentage Infected",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/survivors/percentageInfected",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"percentageInfected"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Percentage Non Infected",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/survivors/percentageNonInfected",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"percentageNonInfected"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Average Amount",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/survivors/averageAmount",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"averageAmount"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Points Lost",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{host}}/api/survivors/pointsLost/{{survivor_id1}}",
+					"host": [
+						"{{host}}"
+					],
+					"path": [
+						"api",
+						"survivors",
+						"pointsLost",
+						"{{survivor_id1}}"
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"protocolProfileBehavior": {}
+}
